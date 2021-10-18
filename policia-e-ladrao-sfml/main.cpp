@@ -117,9 +117,9 @@ int main() {
     
     RenderWindow window(VideoMode(1000, 600), "Policia e Ladrao");
 
-    Texture rua_tex { loadtexture("rua.png") };
-    Texture policial_tex { loadtexture("carro-policia.png") };
-    Texture ladrao_tex { loadtexture("carro-ladrao.png") };
+    Texture rua_tex { loadtexture("images/rua.png") };
+    Texture policial_tex { loadtexture("images/carro-policia.png") };
+    Texture ladrao_tex { loadtexture("images/carro-ladrao.png") };
 
     Entity policial(1, 1, STEP, policial_tex);
     Entity ladrao(3, 3, STEP, ladrao_tex);
@@ -127,8 +127,8 @@ int main() {
 
     Music sirene, batida;
 
-    loadMusic("sirene-policia.ogg", sirene);
-    loadMusic("batida-carro.ogg", batida);
+    loadMusic("sounds/sirene-policia.ogg", sirene);
+    loadMusic("sounds/batida-carro.ogg", batida);
     playMusic(sirene);
 
     while (window.isOpen()) {
