@@ -1,5 +1,11 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#ifdef _WIN32
+  #include <windows.h>
+#else
+  #include <unistd.h>
+#endif
 
 using namespace std;
 using namespace sf;
@@ -23,7 +29,8 @@ struct Entity {
         setSize(this->sprite, step, step);
     }
     
-    void draw(RenderWindow& window) {
+    void draw(RenderWindow& window) 
+    {
         this->sprite.setPosition(x * step, y * step);
         window.draw(this->sprite);
     }
@@ -37,7 +44,8 @@ struct Board {
     Sprite sprite;
     RectangleShape rect;
 
-    Board(int nc, int nl, int step, Texture& texture) {
+    Board(int nc, int nl, int step, Texture& texture) 
+    {
         this->nc = nc;
         this->nl = nl;
         this->step = step;
@@ -63,17 +71,23 @@ struct Board {
 
 void moveEntity(Keyboard::Key key, Entity& entity, vector<Keyboard::Key> move_keys) 
 {
-    if (key == move_keys[0])
+    if (key == move_keys[0]) {
+        entity.sprite.setRotation(-90);
         entity.x--;
-    else if (key == move_keys[1])
+    } else if (key == move_keys[1]) {
+        entity.sprite.setRotation(0);
         entity.y--;
-    else if (key == move_keys[2])
+    } else if (key == move_keys[2]) {
+        entity.sprite.setRotation(90);
         entity.x++;
-    else if (key == move_keys[3])
+    } else if (key == move_keys[3]) {
+        entity.sprite.setRotation(-180);
         entity.y++;
+    }
 }
 
-Texture loadtexture(string path) {
+Texture loadtexture(string path) 
+{
     Texture texture;
     if (!texture.loadFromFile(path)) {
         cout << "Error loading texture" << endl;
@@ -81,6 +95,21 @@ Texture loadtexture(string path) {
     }
 
     return texture;
+}
+
+void loadMusic(string path, Music& musica) 
+{
+    if (!musica.openFromFile(path)) {
+        cout << "Error loading music" << endl;
+        exit(1);
+    }
+}
+
+void playMusic(Music& musica)
+{
+    musica.setLoop(true);
+    musica.play();
+    musica.setVolume(25);
 }
 
 int main() {
@@ -96,6 +125,12 @@ int main() {
     Entity ladrao(3, 3, STEP, ladrao_tex);
     Board rua(10, 6, STEP, rua_tex);
 
+    Music sirene, batida;
+
+    loadMusic("sirene-policia.ogg", sirene);
+    loadMusic("batida-carro.ogg", batida);
+    playMusic(sirene);
+
     while (window.isOpen()) {
         Event event;
 
@@ -106,13 +141,20 @@ int main() {
                 moveEntity(event.key.code, policial, {Keyboard::Left, Keyboard::Up, Keyboard::Right, Keyboard::Down});
                 moveEntity(event.key.code, ladrao, {Keyboard::A, Keyboard::W, Keyboard::D, Keyboard::S});
             }
-        }   
+        }     
 
         window.clear();
         rua.draw(window);
         policial.draw(window);
         ladrao.draw(window);
         window.display();
+
+        if (policial.x == ladrao.x && policial.y == ladrao.y) {
+            sirene.pause();
+            playMusic(batida);
+            sleep(2);
+            window.close();
+        }
     }
 
 }
