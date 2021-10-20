@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 
@@ -44,28 +45,4 @@ int procura_valor_apos(vector<int> fila, int x, int inicio)
     }
 
     return -1;
-}
-
-int main() 
-{
-    cout << existe({-1, -50, -99}, -1) << endl; // 1
-    cout << existe({-1, -50, -99}, 10) << endl; // 0
-
-    cout << endl;
-    
-    cout << contar({-1, -50, -1, -99}, -1) << endl; // 2
-    cout << contar({-1, -50, -1, -99}, 10) << endl; // 0
-
-    cout << endl;
-
-    cout << procular_valor({-1, -50, -1, -99}, -99) << endl; // 3
-    cout << procular_valor({-1, -50, -1, -99}, 10) << endl; // -1
-    
-    cout << endl;
-
-    cout << procura_valor_apos({5, 3, -1, -50, -1, -99}, -1, 0) << endl; // 2
-    cout << procura_valor_apos({5, 3, -1, -50, -1, -99}, -1, 3) << endl; // 4
-    cout << procura_valor_apos({5, 3, -1, -50, -1, -99}, -1, 4) << endl; // 4
-
-    return 0;
 }

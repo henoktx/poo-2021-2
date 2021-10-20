@@ -1,6 +1,6 @@
+#pragma once
 #include <iostream>
 #include <vector>
-#include <cstdlib>
 
 using namespace std;
 
@@ -83,30 +83,4 @@ bool homens_sao_mais_estressados_que_mulheres(vector<int> fila)
     else 
         return false;
 
-}
-
-int main() 
-{
-    cout.setf(ios::boolalpha);
-    
-    cout << calcular_stress_medio({-1, -50, -1, -99}) << endl; // 37.75
-    
-    cout << endl;
-
-    cout << mais_homens_ou_mulheres({5, 3, -1, -50, -1, -99}) << endl; // mulheres
-    cout << mais_homens_ou_mulheres({5, 3, 1, -50, -1, -99}) << endl; // homens
-    cout << mais_homens_ou_mulheres({5, 3, 1, -50, -1, 99}) << endl; // empate
-
-    cout << endl;
-
-    cout << qual_metade_eh_mais_estressada({5, 3, 1, -50, -1, -99}) << endl; // segunda
-    cout << qual_metade_eh_mais_estressada({50, 98, 2, -50, -1, -99}) << endl; // empate
-    cout << qual_metade_eh_mais_estressada({-51, 99, 1, -50, -1, -99}) << endl; // primeira
-
-    cout << endl;
-
-    cout << homens_sao_mais_estressados_que_mulheres({5, 3, 1, -50, -1, -99}) << endl; // false
-    cout << homens_sao_mais_estressados_que_mulheres({30, 55, 1, -17, -1, -20}) << endl; // true
-
-    return 0;
 }

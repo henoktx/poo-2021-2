@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 
@@ -60,24 +61,4 @@ int procurar_melhor_se(vector<int> fila)
     } 
 
     return mais_calmo;
-}
-
-int main() 
-{
-    cout << procurar_menor({5, 3, -1, -50, -1, -99}) << endl; // -99
-
-    cout << endl;
-    
-    cout << procurar_menor_pos({5, 3, -1, -50, -1, -99}) << endl; // 5
-
-    cout << endl;
-
-    cout << procurar_menor_pos_apartir({5, 3, -1, -50, -1, 10}, 3) << endl; // 3
-
-    cout << endl;
-
-    cout << procurar_melhor_se({5, 3, -1, -50, -1, -99}) << endl; // 1
-    cout << procurar_melhor_se({-1, -50, -1, -99}) << endl; // -1
-
-    return 0;
 }
