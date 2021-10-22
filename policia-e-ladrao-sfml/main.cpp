@@ -60,12 +60,6 @@ struct Board {
     }
     void draw(RenderWindow& window) {
         window.draw(this->sprite);
-        /*for (int i = 0; i < nc; i++) {
-            for (int j = 0; j < nl; j++) {
-                rect.setPosition(i * step, j * step);
-                window.draw(rect);
-            }
-        }*/
     }
 };
 
