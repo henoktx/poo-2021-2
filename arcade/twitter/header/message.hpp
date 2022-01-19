@@ -25,10 +25,13 @@ public:
         ss << this->msg << std::endl;
         ss << "Likes: " << likes.size() << " | Users: ";
         for (auto i : likes) {
-            ss << i << (*--likes.end() != i ? ", " : " ");
+            ss << i << (*--likes.end() != i ? ", " : "");
         }
+        ss << "\n";
         return ss.str();
     }
 
     int getID() {return this->id;}
+
+    std::string getUsername() {return this->username;}
 };

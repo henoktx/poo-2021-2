@@ -35,15 +35,21 @@ public:
     }
 
     void like(int tweetID) {
-        this->inbox.getTweet(tweetID)->like(this->username);
+        if (this->inbox.getTweet(tweetID) == nullptr) {
+            throw std::string("Message not found");
+        } else {
+            this->inbox.getTweet(tweetID)->like(this->username);
+        }
     }
 
-    Inbox inboxing() {return this->inbox;}
+    Inbox* getInbox() {return &this->inbox;}
 
     void sendTweet(Message *tweet) {
         for (auto i : followers) {
             i.second->inbox.receiveNew(tweet);
         }
+        this->inbox.receiveNew(tweet);
+        this->inbox.store(tweet);
         std::cout << "Your tweet posted" << std::endl;
     }
 
@@ -51,11 +57,11 @@ public:
         std::stringstream ss;
         ss << this->username << ":\n  followers [" << followers.size() << "] ⟶ ";
         for (auto i : followers) {
-            ss << i.second->username << (*followers.rbegin() != i ? ", " : "\n");
+            ss << i.second->username << (*followers.rbegin() != i ? ", " : "");
         }
-        ss << "  following [" << following.size() << "] ⟶ ";
+        ss << "\n  following [" << following.size() << "] ⟶ ";
         for (auto i : following) {
-            ss << i.second->username << (*following.rbegin() != i ? ", " : " ");
+            ss << i.second->username << (*following.rbegin() != i ? ", " : "");
         }
         ss << std::endl;
         return ss.str();

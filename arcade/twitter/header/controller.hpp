@@ -42,11 +42,15 @@ public:
         if (this->users.find(username)->first == username) {
            return this->users.find(username)->second;
         } 
-        throw "User not found";
+        throw std::string("User not found");
     }
 
     void sendTweet(const std::string &username, const std::string &msg) {
-        this->getUser(username)->sendTweet(this->createTweet(username, msg));
+        if (this->users.find(username)->first == username) {
+            this->getUser(username)->sendTweet(this->createTweet(username, msg));
+            return;
+        }
+        throw std::string("User not found");
     }
 
     std::string toString() {

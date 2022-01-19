@@ -12,7 +12,7 @@ int main() {
 
         if (cmd == "end") {
             break;
-        } else if (cmd == "addUser") {
+        } else if (cmd == "add") {
             std::string name;
             ss >> name;
             controle.addUser(name);
@@ -26,38 +26,55 @@ int main() {
             ss >> follower;
             try {
                 controle.getUser(follower)->follow(controle.getUser(following));
-            } catch (char const *error) {
-                std::cout << "User not found" << std::endl;
+            } catch (std::string &error) {
+                std::cout << error << std::endl;
             }
             std::cout << std::endl;
         } else if (cmd == "twittar") {
-            std::string tweet, user;
+            std::string tweet, user, aux;
             ss >> user;
-            tweet = ss.str();
-            controle.sendTweet(user, tweet);
+            while (ss >> aux) {tweet += aux + " ";}
+            try {
+                controle.sendTweet(user, tweet);
+            } catch (std::string &error) {
+                std::cout << error << std::endl;
+            }
             std::cout << std::endl;
         } else if (cmd == "unread") {
             std::string username;
             ss >> username;
-            controle.getUser(username)->inboxing().getUnread();
-            std::cout << std::endl;
+            auto aux = controle.getUser(username)->getInbox()->getUnread();
+            for (auto i : aux) {
+                std::cout << i.first << ":" << i.second->getUsername() << " | Message: " << i.second->to_string() << std::endl;
+            }
         } else if (cmd == "timeline") {
             std::string username;
             ss >> username;
-            controle.getUser(username)->inboxing().toString();
-            std::cout << std::endl;
+            std::cout << controle.getUser(username)->getInbox()->toString();
         } else if (cmd == "like") {
             std::string username;
             int twId;
-            ss >> username;
             ss >> twId;
-            controle.getUser(username)->like(twId);
+            ss >> username;
+            try {
+                controle.getUser(username)->like(twId);
+            } catch (std::string &error) {
+                if (error == "User not found") {
+                    std::cout << error << std::endl;
+                } else if (error == "Message not found") {
+                    std::cout << error << std::endl;
+                }
+            }
             std::cout << std::endl;
         } else if (cmd == "unfollow") {
             std::string unfollow, unfollower;
             ss >> unfollow;
             ss >> unfollower;
-            controle.getUser(unfollower)->unfollow(controle.getUser(unfollow));
+            try {
+                controle.getUser(unfollower)->unfollow(controle.getUser(unfollow));
+            } catch (std::string &error) {
+                std::cout << error << std::endl;
+            }
             std::cout << std::endl;
         } else {
             std::cout << "Invalid command" << std::endl;
