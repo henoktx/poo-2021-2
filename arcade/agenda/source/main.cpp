@@ -1,4 +1,4 @@
-#include "agenda.hpp"
+#include "../header/agenda.hpp"
 
 int main() {
     std::list<std::shared_ptr<Fone>> dois;
@@ -32,9 +32,6 @@ int main() {
 
     std::cout << std::endl;
 
-    agenda1.procura("h");
-    std::cout << std::endl;
-    
     agenda1.getContato("h");
     std::cout << std::endl;
 

@@ -1,6 +1,6 @@
 #include <iostream>
-#include "cinema.hpp"
-#include "funcionalidades.hpp"
+#include "../header/cinema.hpp"
+#include "../header/funcionalidades.hpp"
 
 int main() {
     Cinema cine(3);

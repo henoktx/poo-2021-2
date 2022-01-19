@@ -1,18 +1,16 @@
 #pragma once
 
 #include <algorithm>
-#include <list>
-#include <map>
-#include "../contatos/contato.hpp"
+#include "../../contatos/header/contato.hpp"
 
 class Agenda {
 private:
-    std::map<std::string, std::shared_ptr<Contato>> contatos {};
+    std::list<std::shared_ptr<Contato>> contatos {};
 
     int procuraPos(const std::string &nome) {
         int contador {0};
-        for (auto i : this->contatos) {
-            if (nome == i.second->getName()) {
+        for (auto it = contatos.begin(); it != contatos.end(); it++) {
+            if (nome == (*it)->getName()) {
                 return contador;
             }
             contador++;
@@ -20,26 +18,41 @@ private:
         return -1;
     }
 
+    void sort() {
+        auto nome = contatos.begin();
+        auto contador = contatos.begin();
+        for (auto it = contatos.begin(); it != contatos.end(); it++) {
+            for (auto it2 = contador; it2 != contatos.end(); it2++) {
+                if ((*it2)->getName() < (*nome)->getName()) {
+                    nome = it2;
+                }
+            }
+            std::swap(*contador, *nome);
+            contador++;
+            nome = contador;
+        }
+    }
+
 public:
     Agenda() {}
 
     void addContato(std::shared_ptr<Contato> &contato) {
         for (auto it = contatos.begin(); it != contatos.end(); it++) {
-            if (contato->getName() == it->second->getName()) {
+            if (contato->getName() == (*it)->getName()) {
                 for (auto i : contato->getFones()) {
-                    it->second->addFone(i);
+                    (*it)->addFone(i);
                     std::cout << "Contato adicionado com sucesso" << std::endl;
                     return;
                 }
             } 
         }
-        contatos.insert(std::make_pair(contato->getName(), contato));
+        contatos.push_back(contato);
         std::cout << "Contato adicionado com sucesso" << std::endl;
     }
 
     void rmContato(const std::string &nome) {
         for (auto it = contatos.begin(); it != contatos.end(); it++) {
-            if (nome == it->second->getName()) {
+            if (nome == (*it)->getName()) {
                 contatos.erase(it);
                 std::cout << "Contato removido com sucesso" << std::endl;
                 return;
@@ -52,9 +65,9 @@ public:
         std::list<std::shared_ptr<Fone>> vazia;
         auto vazio = std::make_shared<Contato>(" ", vazia);
         for (auto it = contatos.begin(); it != contatos.end(); it++) {
-            if (nome == it->second->getName()) {
-                std::cout << "Contato encontrado: " << it->second->toString() << std::endl;
-                return it->second;                
+            if (nome == (*it)->getName()) {
+                std::cout << "Contato encontrado: " << (*it)->toString() << std::endl;
+                return *it;                
             }
         }        
         std::cout << nome << " não corresponde a nenhum contato da agenda" << std::endl;
@@ -64,10 +77,10 @@ public:
     std::list<std::shared_ptr<Contato>> procura(const std::string &pattern) {
         std::list<std::shared_ptr<Contato>> encontrados {};
         for (auto it = contatos.begin(); it != contatos.end(); it++) {
-            std::string parte = it->second->getName();
+            std::string parte = (*it)->getName();
             if (parte.find(pattern) != std::string::npos) {
-                encontrados.push_back(it->second);
-                std::cout << it->second->toString() << std::endl;
+                encontrados.push_back(*it);
+                std::cout << (*it)->toString() << std::endl;
             }
         }
         if ((int) encontrados.size() <= 0) {
@@ -80,14 +93,15 @@ public:
         return encontrados;
     }
 
-    std::map<std::string, std::shared_ptr<Contato>> getContatos() {
+    std::list<std::shared_ptr<Contato>> getContatos() {
         return this->contatos;
     }
     
     std::string toString() {
+        sort();
         std::stringstream ss;
         for (auto it = this->contatos.begin(); it != this->contatos.end(); it++) {
-            ss << *it->second << std::endl;       
+            ss << **it << std::endl;       
         }
         return ss.str();
     }
