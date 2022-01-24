@@ -27,7 +27,11 @@ int main() {
             try {
                 controle.getUser(follower)->follow(controle.getUser(following));
             } catch (std::string &error) {
-                std::cout << error << std::endl;
+                if (error == "You can't follow yourself") {
+                    std::cout << error << std::endl;
+                } else {
+                    std::cout << error << std::endl;
+                }
             }
             std::cout << std::endl;
         } else if (cmd == "twittar") {
@@ -40,17 +44,15 @@ int main() {
                 std::cout << error << std::endl;
             }
             std::cout << std::endl;
-        } else if (cmd == "unread") {
-            std::string username;
-            ss >> username;
-            auto aux = controle.getUser(username)->getInbox()->getUnread();
-            for (auto i : aux) {
-                std::cout << i.first << ":" << i.second->getUsername() << " | Message: " << i.second->to_string() << std::endl;
-            }
         } else if (cmd == "timeline") {
             std::string username;
             ss >> username;
-            std::cout << controle.getUser(username)->getInbox()->toString();
+            try {
+                std::cout << controle.getUser(username)->getInbox()->toString();
+            } catch (std::string &error) {
+                std::cout << error << std::endl;
+            }
+            std::cout << std::endl;
         } else if (cmd == "like") {
             std::string username;
             int twId;
@@ -61,7 +63,7 @@ int main() {
             } catch (std::string &error) {
                 if (error == "User not found") {
                     std::cout << error << std::endl;
-                } else if (error == "Message not found") {
+                } else if (error == "Tweet not found") {
                     std::cout << error << std::endl;
                 }
             }
@@ -76,12 +78,24 @@ int main() {
                 std::cout << error << std::endl;
             }
             std::cout << std::endl;
+        } else if (cmd == "rm") {
+            std::string username;
+            ss >> username;
+            controle.rmUser(username);
+            std::cout << std::endl;
+        } else if (cmd == "rt") {
+            std::string username, msg, aux;
+            int msgID;
+            ss >> username;
+            ss >> msgID;
+            while (ss >> aux) {msg += aux + " ";}
+            controle.sendRt(username, msgID, msg);
+            std::cout << std::endl;
         } else {
             std::cout << "Invalid command" << std::endl;
             std::cout << std::endl;
         }
     }
 
-    
     return 0;
 }

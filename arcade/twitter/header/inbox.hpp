@@ -1,62 +1,71 @@
 #pragma once
 
-#include "message.hpp"
+#include "tweet.hpp"
 #include <map>
+#include <list>
 
 class Inbox {
 private:
-    std::map<int, Message*> allMsg;
-    std::map<int, Message*> unread;
+    std::map<int, Tweet*> timeline;
+    std::map<int, Tweet*> myTweets;
 
 public:
-    void receiveNew(Message *tweet) {
-        auto pairTweet = std::make_pair(tweet->getID(), tweet);
-        allMsg.insert(pairTweet);
-        unread.insert(pairTweet);
-    }
-
-    void store(Message* tweet) {
-        if (unread.count(tweet->getID()) == 1) {
-            if (tweet->getUsername() != unread.find(tweet->getID())->second->getUsername()) {
-                std::cout << "This message was read" << std::endl;
-            }
-            unread.erase(tweet->getID());
-            return;
+    void storeInTimeline(Tweet *tweet) {
+        if (this->timeline.find(tweet->getID())->second == tweet) {
+            throw std::string("This tweet has already been stored");
         }
-        std::cout << "This message is already read" << std::endl;
+        this->timeline.insert(std::make_pair(tweet->getID(), tweet));
     }
 
-    std::map<int, Message*> getUnread() {
-        auto aux = this->unread;
-        this->unread.clear();
-        return aux;
+    std::list<Tweet*> getTimeline() {
+        std::list<Tweet*> timelineList {};
+        for (auto i : this->timeline) {
+            timelineList.push_back(i.second);
+        }
+        return timelineList;
     }
 
-    std::map<int, Message*> getAllMsg() {
-        return this->allMsg;
-    }
-
-    Message* getTweet(int id) {
-        auto aux = allMsg.find(id);
-        if (aux == allMsg.end()) {
-            return nullptr;
+    Tweet* getTweet(int id) {
+        auto aux = this->timeline.find(id);
+        if (aux == this->timeline.end()) {
+            throw std::string("Tweet not found");
         }
         return &(*aux->second);
     }
 
-    std::string toString() {
-        this->unread.clear();
-        std::stringstream ss;
-        for (auto i : allMsg) {
-            ss << i.first << ":" << i.second->getUsername() << " | Message: " << i.second->to_string() << std::endl;
+    void rmMsgsFrom(std::string username) {
+        std::list<int> idsRm {};
+        for (auto i : this->timeline) {
+            if (i.second->getSender() == username) {
+                idsRm.push_back(i.first);
+            }
         }
-        return ss.str();
+        for (auto j : idsRm) {
+            this->timeline.erase(j);
+        }
     }
 
-    friend std::ostream& operator<<(std::ostream &os, std::map<int, Message*> &map) {
-        for (auto i : map) {
-            os << i.first << ":" << i.second->getUsername() << " " << i.second->to_string() << std::endl;
+    void storeInMyTweets(Tweet *tweet) {
+        if (this->myTweets.count(tweet->getID()) == 1) {
+            std::cout << "This tweet has already been stored" << std::endl;
+            return;
         }
-        return os;
+        this->myTweets.insert(std::make_pair(tweet->getID(), tweet));
+    }
+
+    std::list<Tweet*> getMyTweets() {
+        std::list<Tweet*> myTweetsList {};
+        for (auto i : this->myTweets) {
+            myTweetsList.push_back(i.second);
+        }
+        return myTweetsList;
+    }
+
+    std::string toString() {
+        std::stringstream ss;
+        for (auto i : timeline) {
+            ss << i.first << ":" << i.second->getSender() << " | " << i.second->to_string() << std::endl;
+        }
+        return ss.str();
     }
 };
