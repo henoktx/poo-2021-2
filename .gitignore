@@ -1,6 +1,7 @@
 *.zip
 *.exe
 *.out
+*.txt
 .vscode/
 teste
 cpp_functional-master
